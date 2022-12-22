@@ -28,7 +28,7 @@ func (s Set[T]) Add(items ...T) {
 	}
 }
 
-// Remove deletes teh specified items (one or many) from the Set s.
+// Remove deletes the specified items (one or many) from the Set s.
 // Set s is modified in place. If passed nothing it silently returns.
 func (s Set[T]) Remove(items ...T) {
 	for _, item := range items {
@@ -80,6 +80,21 @@ func (s Set[T]) ContainsAny(items ...T) bool {
 	return false
 }
 
+// IsSubSet tests if every element of s exists in the other.
+func (s Set[T]) IsSubSet(other Set[T]) bool {
+	for k := range s {
+		if _, ok := other[k]; !ok {
+			return false
+		}
+	}
+	return true
+}
+
+// IsSuperSet tests if every element of other exists in s.
+func (s Set[T]) IsSuperSet(other Set[T]) bool {
+	return other.IsSubSet(s)
+}
+
 // Copy return a new Set with a copy of s.
 func (s Set[T]) Copy() Set[T] {
 	result := make(Set[T], len(s))
@@ -124,6 +139,7 @@ func (s Set[T]) Merge(other Set[T]) {
 }
 
 // Separate removes items in Set other from Set s.
+// This works just like Difference but applies to the Set in place.
 func (s Set[T]) Separate(other Set[T]) {
 	for item := range other {
 		s.Remove(item)

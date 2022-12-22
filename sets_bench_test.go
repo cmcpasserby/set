@@ -15,9 +15,8 @@ func testSeqSet(start, count int, b *testing.B) Set[int] {
 }
 
 func BenchmarkSet_Contains(b *testing.B) {
-	b.StopTimer()
 	set := testSeqSet(0, b.N, b)
-	b.StartTimer()
+	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
 		_ = set.Contains(i)
@@ -25,12 +24,11 @@ func BenchmarkSet_Contains(b *testing.B) {
 }
 
 func BenchmarkMap_Contains(b *testing.B) {
-	b.StopTimer()
 	set := make(map[int]struct{}, b.N)
 	for i := 0; i < b.N; i++ {
 		set[i] = struct{}{}
 	}
-	b.StartTimer()
+	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
 		_, _ = set[i]
@@ -38,10 +36,9 @@ func BenchmarkMap_Contains(b *testing.B) {
 }
 
 func BenchmarkSet_Equals(b *testing.B) {
-	b.StopTimer()
 	lhs := testSeqSet(0, size, b)
 	rhs := testSeqSet(0, size, b)
-	b.StartTimer()
+	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
 		_ = lhs.Equals(rhs)
@@ -49,7 +46,6 @@ func BenchmarkSet_Equals(b *testing.B) {
 }
 
 func BenchmarkMap_Equals(b *testing.B) {
-	b.StopTimer()
 	lhs := make(map[int]struct{}, size)
 	rhs := make(map[int]struct{}, size)
 
@@ -57,7 +53,7 @@ func BenchmarkMap_Equals(b *testing.B) {
 		lhs[i] = struct{}{}
 		rhs[i] = struct{}{}
 	}
-	b.StartTimer()
+	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
 		for key := range lhs {
@@ -67,10 +63,9 @@ func BenchmarkMap_Equals(b *testing.B) {
 }
 
 func BenchmarkUnion(b *testing.B) {
-	b.StopTimer()
 	lhs := testSeqSet(0, size, b)
 	rhs := testSeqSet(size, size, b)
-	b.StartTimer()
+	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
 		_ = Union(lhs, rhs)

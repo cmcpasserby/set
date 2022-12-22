@@ -1,6 +1,8 @@
 package set
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestSet_Equals(t *testing.T) {
 	tests := []struct {
@@ -111,6 +113,90 @@ func TestSet_ContainsAny(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := tt.self.ContainsAny(tt.args...); got != tt.want {
 				t.Errorf("ContainsAny() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestSet_IsSubSet(t *testing.T) {
+	tests := []struct {
+		name string
+		self Set[int]
+		arg  Set[int]
+		want bool
+	}{
+		{
+			name: "is",
+			self: New(1, 2, 3),
+			arg:  New(1, 2, 3, 4, 5),
+			want: true,
+		},
+		{
+			name: "not",
+			self: New(1, 15, 2, 3),
+			arg:  New(1, 2, 3, 4, 5),
+			want: false,
+		},
+		{
+			name: "empty lhs",
+			self: New[int](),
+			arg:  New(1, 2, 3, 4, 5),
+			want: true,
+		},
+		{
+			name: "empty rhs",
+			self: New(1, 2, 3),
+			arg:  New[int](),
+			want: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.self.IsSubSet(tt.arg); got != tt.want {
+				t.Errorf("IsSubSet() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestSet_IsSuperSet(t *testing.T) {
+	tests := []struct {
+		name string
+		self Set[int]
+		arg  Set[int]
+		want bool
+	}{
+		{
+			name: "is",
+			self: New(1, 2, 3, 4, 5),
+			arg:  New(1, 2, 3),
+			want: true,
+		},
+		{
+			name: "not",
+			self: New(1, 2, 3, 4, 5),
+			arg:  New(1, 2, 3, 15),
+			want: false,
+		},
+		{
+			name: "empty lhs",
+			self: New[int](),
+			arg:  New(1, 2, 3, 15),
+			want: false,
+		},
+		{
+			name: "empty lhs",
+			self: New(1, 2, 3, 4, 5),
+			arg:  New[int](),
+			want: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.self.IsSuperSet(tt.arg); got != tt.want {
+				t.Errorf("IsSubSet() = %v, want %v", got, tt.want)
 			}
 		})
 	}
