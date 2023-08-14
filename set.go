@@ -1,8 +1,10 @@
 package set
 
 import (
+	"encoding/json"
 	"fmt"
 	"math"
+	"slices"
 	"strings"
 )
 
@@ -144,6 +146,53 @@ func (s Set[T]) Separate(other Set[T]) {
 	for item := range other {
 		s.Remove(item)
 	}
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface turns the slice back to a Set.
+func (s *Set[T]) UnmarshalJSON(bytes []byte) error {
+	var items []T
+	if err := json.Unmarshal(bytes, &items); err != nil {
+		return err
+	}
+	*s = New[T](items...)
+	return nil
+}
+
+func (s Set[T]) MarshalJSON() ([]byte, error) {
+	items := s.Slice()
+
+	switch v := any(items).(type) {
+	case []string:
+		slices.Sort(v)
+	case []int:
+		slices.Sort(v)
+	case []int8:
+		slices.Sort(v)
+	case []int16:
+		slices.Sort(v)
+	case []int32:
+		slices.Sort(v)
+	case []int64:
+		slices.Sort(v)
+	case []uint:
+		slices.Sort(v)
+	case []uint8:
+		slices.Sort(v)
+	case []uint16:
+		slices.Sort(v)
+	case []uint32:
+		slices.Sort(v)
+	case []uint64:
+		slices.Sort(v)
+	case []uintptr:
+		slices.Sort(v)
+	case []float32:
+		slices.Sort(v)
+	case []float64:
+		slices.Sort(v)
+	}
+
+	return json.Marshal(items)
 }
 
 // Union is the merger of multiple sets.
