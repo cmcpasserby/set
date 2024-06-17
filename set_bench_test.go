@@ -1,6 +1,8 @@
 package set
 
-import "testing"
+import (
+	"testing"
+)
 
 const size = 100
 

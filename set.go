@@ -45,8 +45,7 @@ func (s Set[T]) Equals(other Set[T]) bool {
 	}
 
 	for key := range s {
-		_, ok := other[key]
-		if !ok {
+		if _, ok := other[key]; !ok {
 			return false
 		}
 	}
