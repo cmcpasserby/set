@@ -1,6 +1,7 @@
 package set
 
 import (
+	"math"
 	"testing"
 )
 
@@ -186,7 +187,7 @@ func TestSet_IsSuperSet(t *testing.T) {
 			want: false,
 		},
 		{
-			name: "empty lhs",
+			name: "empty rhs",
 			self: New(1, 2, 3, 4, 5),
 			arg:  New[int](),
 			want: true,
@@ -454,4 +455,25 @@ func TestSymmetricDifference(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestFloatingPoint(t *testing.T) {
+	t.Run("Contains NaN floats", func(t *testing.T) {
+		defer func() {
+			if r := recover(); r == nil {
+				t.Errorf("The code did not panic")
+			}
+		}()
+
+		_ = New(math.NaN())
+	})
+
+	t.Run("Floating Point", func(t *testing.T) {
+		a := New(math.Pi, math.Pi, math.Pi, math.E)
+		b := New(math.Pi, math.E)
+
+		if !a.Equals(b) {
+			t.Errorf("Contains no NaN floats") // TODO proper error message
+		}
+	})
 }

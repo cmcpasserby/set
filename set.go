@@ -16,9 +16,7 @@ type Set[T comparable] map[T]struct{}
 // New creates a new set with 0 or many items.
 func New[T comparable](items ...T) Set[T] {
 	set := make(Set[T], len(items))
-	for _, item := range items {
-		set[item] = struct{}{}
-	}
+	set.Add(items...)
 	return set
 }
 
@@ -26,6 +24,9 @@ func New[T comparable](items ...T) Set[T] {
 // Set s is modified in place. If passed nothing it silently returns.
 func (s Set[T]) Add(items ...T) {
 	for _, item := range items {
+		if item != item { // NaN is not equal to its self, this lets it be checked without first checking f T is a float
+			panic("NaN is not permitted in set")
+		}
 		s[item] = struct{}{}
 	}
 }
